@@ -37,7 +37,7 @@
 ;;
 ;; FILE-EXTENSION is without dot ".". AUTOMODE-REGEXP is put into
 ;; auto-mode-alist, if it is not present, a regexp will be made up from
-;; FILE-EXTENSION. IGNORED-EXTENSIONS-LIST, if present, is appended to 
+;; FILE-EXTENSION. IGNORED-EXTENSIONS-LIST, if present, is appended to
 ;; completion-ignored-extensions. See proof-assistant-table for more info.
 ;;
 (defconst proof-assistant-table-default
@@ -156,7 +156,7 @@ You can use customize to set this variable."
 ;;
 
 (defun proof-add-to-load-path (dir)
-  "Add DIR to `load-path' if not contained already"
+  "Add DIR to `load-path' if not contained already."
   (add-to-list 'load-path dir))
 
 (proof-add-to-load-path (concat proof-home-directory "generic/"))
@@ -206,10 +206,10 @@ Each entry is a list of the form
 The NAME is a string, naming the proof assistant.
 The SYMBOL is used to form the name of the mode for the
 assistant, `SYMBOL-mode', run when files with AUTOMODE-REGEXP
-\(or with extension FILE-EXTENSION) are visited. If present,
+\(or with extension FILE-EXTENSION) are visited.  If present,
 IGNORED-EXTENSIONS-LIST is a list of file-name extensions to be
 ignored when doing file-name completion (IGNORED-EXTENSIONS-LIST
-is added to completion-ignored-extensions).
+is added to ‘completion-ignored-extensions’).
 
 SYMBOL is also used to form the name of the directory and elisp
 file for the mode, which will be
@@ -303,13 +303,13 @@ If ASSISTANT-NAME is omitted, look up in `proof-assistant-table'."
        (run-hooks 'proof-ready-for-assistant-hook))))))
 
 
-(defvar proof-general-configured-provers 
+(defvar proof-general-configured-provers
   (or (mapcar 'intern (split-string (or (getenv "PROOFGENERAL_ASSISTANTS") "")))
       proof-assistants
       (mapcar (lambda (astnt) (car astnt)) proof-assistant-table))
   "A list of the configured proof assistants.
 Set on startup to contents of environment variable PROOFGENERAL_ASSISTANTS,
-the lisp variable `proof-assistants', or the contents of `proof-assistant-table'.")
+the Lisp variable `proof-assistants', or the contents of `proof-assistant-table'.")
   
 ;; Add auto-loads and load-path elements to support the
 ;; proof assistants selected, and define stub major mode functions
@@ -317,7 +317,7 @@ the lisp variable `proof-assistants', or the contents of `proof-assistant-table'
   (while assistants
     (let*
 	((assistant (car assistants))	; compiler bogus warning here
-	 (tableentry 
+	 (tableentry
 	  (or (assoc assistant
 		     proof-assistant-table)
 	      (error "Symbol %s is not in proof-assistant-table (in proof-site)"
@@ -377,16 +377,16 @@ the lisp variable `proof-assistants', or the contents of `proof-assistant-table'
 ;;
 
 (defun proof-chose-prover (prompt)
-  (completing-read prompt 
-		   (mapcar 'symbol-name 
+  (completing-read prompt
+		   (mapcar 'symbol-name
 			   proof-general-configured-provers)))
 
 (defun proofgeneral (prover)
   "Start proof general for prover PROVER."
   (interactive
    (list (proof-chose-prover "Start Proof General for theorem prover: ")))
-  (proof-ready-for-assistant (intern prover) 
-			     (nth 1 (assoc (intern prover) 
+  (proof-ready-for-assistant (intern prover)
+			     (nth 1 (assoc (intern prover)
 					   proof-assistant-table-default)))
   (require (intern prover)))
 
